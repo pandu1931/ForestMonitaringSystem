@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Forest Monitoring System</title>
+    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.1.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "forest-monitoring-system.firebaseapp.com",
+            projectId: "forest-monitoring-system",
+            storageBucket: "forest-monitoring-system.appspot.com",
+            messagingSenderId: "149217236846",
+            appId: "1:149217236846:web:44f848c7858a04b34b537f",
+            measurementId: "G-K36YLNY17C",
+            databaseURL: "https://forest-monitoring-system-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        var databaseRef = firebase.database().ref('node_1');
+
+        databaseRef.on('value', function (snapshot) {
+            var data = snapshot.val();
+            document.getElementById('temperature').innerHTML = data.temperature + " &deg;C";
+            document.getElementById('humidity').innerHTML = data.humidity + "%";
+            document.getElementById('smoke').innerHTML = data.smoke_detected;
+            document.getElementById('flame').innerHTML = data.flame_detected;
+
+            if (data.smoke_detected == "1") {
+                console.log("Smoke detected");
+                window.alert("Warning...! Smoke detected..!");
+            }
+            if (data.flame_detected == "1") {
+                console.log("Fire detected");
+                window.alert("Warning...! Fire detected..!");
+            }
+        });
+
+        setInterval(drawClock, 2000);
+
+        function drawClock() {
+            var now = new Date();
+            var hour = now.getHours();
+            var minute = now.getMinutes();
+
+            //Date
+            var options = { year: 'numeric', month: 'long', day: 'numeric' };
+            var today = new Date();
+            document.getElementById("date").innerHTML = today.toLocaleDateString("en-US", options);
+
+            //hour
+            var hourAngle = (360 * (hour / 12)) + ((360 / 12) * (minute / 60));
+            var minAngle = 360 * (minute / 60);
+            document.getElementById("hour").style.transform = "rotate(" + (hourAngle) + "deg)";
+            document.getElementById("min").style.transform = "rotate(" + (minAngle) + "deg)";
+        }
+    </script>
+
+</head>
+
+<style>
+    @import url(https://fonts.googleapis.com/css?family=Montserrat);
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: #515161;
+        font-family: 'Montserrat', Arial, sans-serif;
+        color: #ffffff;
+    }
+
+    .header {
+        background-color: #06d239;
+        padding: 20px;
+        text-align: center;
+        color: #6816cd;
+        font-size: 2.5em;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+
+    .subheader {
+        background-color: #262e2c;
+        text-align: center;
+        color: #cdf008;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        font-size: 18px;
+        color: #ffffff;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        align-items: center;
+        margin: 20px;
+    }
+
+    .widget {
+        background-color: #2d2f33;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+        margin: 20px;
+        height: auto;
+        width: 350px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .widget:hover {
+        transform: translateY(-10px);
+    }
+
+    .upper {
+        background: #16213e;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        color: #e94560;
+        font-size: 1.8em;
+    }
+
+    .lower {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        text-align: center;
+        background-color: #1b1b2f;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .clock {
+        background: #1b1b2f;
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px #29c364, 0 10px 10px 5px rgba(0, 0, 0, 0.3);
+        height: 120px;
+        width: 120px;
+        position: absolute;
+        right: 15px;
+        top: -90px;
+    }
+
+    .hour, .min {
+        background: #f5f5f5;
+        position: absolute;
+        left: 50%;
+        transform-origin: bottom center;
+        transition: all .5s linear;
+    }
+
+    .hour {
+        height: 40px;
+        width: 4px;
+        top: 25px;
+    }
+
+    .min {
+        height: 55px;
+        width: 4px;
+        top: 10px;
+    }
+
+    .infos {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 1.2em;
+        color: #ffffff;
+    }
+
+    .infos span {
+        display: block;
+        font-size: 1.6em;
+        margin-top: 5px;
+        color: #f0a500;
+    }
+
+    .marquee-container {
+        width: 100%;
+        overflow: hidden;
+        background-color: #86ce28;
+        padding: 10px 0;
+        color: white;
+        font-size: 1.5em;
+        text-align: center;
+        position: fixed;
+        bottom: 0;
+    }
+
+    .marquee-container marquee {
+        color: #16213e;
+    }
+
+    .bottom {
+        background: #1f4068;
+        padding: 20px;
+        text-align: center;
+        color: white;
+    }
+
+    a {
+        color: #19bcac;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+
+    a:hover {
+        color: #bd9a0b;
+    }
+</style>
+
+<body>
+
+    <div class="header">
+        FOREST MONITORING SYSTEM
+    </div>
+
+    <div class="subheader">
+        <h3>Total number of nodes: 2</h3>
+        <h3>Online: 1</h3>
+        <h3>Offline: 1</h3>
+    </div>
+
+    <div class="container">
+        <div class="widget">
+            <div class="clock">
+                <div class="min" id="min"></div>
+                <div class="hour" id="hour"></div>
+            </div>
+            <div class="upper">
+                <div id="date">21 March</div>
+            </div>
+            <div class="lower">
+                <div class="infos">
+                    <h2>TEMPERATURE</h2>
+                    <span id="temperature">21 &deg;C</span>
+                </div>
+                <div class="infos">
+                    <h2>HUMIDITY</h2>
+                    <span id="humidity">23%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget">
+            <div class="upper">
+                SENSOR STATUS
+            </div>
+            <div class="lower">
+                <div class="infos">
+                    <h2>FLAME</h2>
+                    <span id="flame">0</span>
+                </div>
+                <div class="infos">
+                    <h2>SMOKE</h2>
+                    <span id="smoke">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget">
+            <div class="upper">
+                GRAPHICAL DATA
+            </div>
+            <div class="lower">
+                <div class="infos">
+                    <a href="https://thingspeak.com/channels/2202933" target="_blank">View Graph</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="marquee-container">
+        <marquee behavior="scroll" direction="left">
+            Smoke Detected in Node 1. Please check the sensor immediately! | Fire Detected in Node 2! Urgent action required!
+        </marquee>
+    </div>
+
+</body>
+
+</html>
